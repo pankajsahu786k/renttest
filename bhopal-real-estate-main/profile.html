@@ -1,0 +1,84 @@
+<script>
+        const brokerEmail = localStorage.getItem('brokerEmail');
+
+        // Page load hote hi purana data database se khinchkar lana
+        async function loadProfileData() {
+            if (!brokerEmail) {
+                alert("कृपया पहले लॉगिन करें!");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/get-profile?email=${encodeURIComponent(brokerEmail)}`);
+                const profile = await response.json();
+
+                if (profile) {
+                    if (profile.phone) document.getElementById('phone').value = profile.phone;
+                    if (profile.photo) document.getElementById('photoPreview').src = profile.photo;
+                    
+                    // Selected checkboxes ko tick (check) karna
+                    if (profile.dealingAreas && profile.dealingAreas.length > 0) {
+                        const checkboxes = document.querySelectorAll('.areas-grid input[type="checkbox"]');
+                        checkboxes.forEach(cb => {
+                            if (profile.dealingAreas.includes(cb.value)) {
+                                cb.checked = true;
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Profile load error:", error);
+            }
+        }
+
+        // Photo chunne par turant preview dikhane ka logic
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('photoPreview').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Form submit karke data save karne ka logic
+        document.getElementById('profileForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Saare ticked checkboxes se shehro ki list nikalna
+            const selectedAreas = [];
+            document.querySelectorAll('.areas-grid input[type="checkbox"]:checked').forEach(cb => {
+                selectedAreas.push(cb.value);
+            });
+
+            const formData = new FormData();
+            formData.append('brokerEmail', brokerEmail);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('dealingAreas', JSON.stringify(selectedAreas)); // Array ko JSON string banakar bhejna best practice hai
+
+            const photoInput = document.getElementById('brokerPhoto');
+            if (photoInput.files.length > 0) {
+                // 🚨 यही वो लाइन है जो ठीक की गई है ('profilePhoto' कर दिया गया है)
+                formData.append('profilePhoto', photoInput.files[0]);
+            }
+
+            try {
+                const response = await fetch('/api/update-profile', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert("❌ एरर: " + result.message);
+                }
+            } catch (error) {
+                alert("प्रोफाइल सेव करने में समस्या आई।");
+            }
+        });
+
+        window.onload = loadProfileData;
+    </script>

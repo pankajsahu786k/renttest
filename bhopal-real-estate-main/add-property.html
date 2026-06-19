@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Property - Bhopal Real Estate</title>
+    <link rel="stylesheet" href="add-property-style.css">
+</head>
+
+<body>
+
+    <header class="form-header">
+        <div class="logo">Bhopal Properties (Broker Panel)</div>
+        <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+    </header>
+
+    <div class="form-container">
+        <h2>नयी प्रॉपर्टी की जानकारी भरें</h2>
+        <p>कृपया भोपाल में स्थित अपनी प्रॉपर्टी का सही विवरण दें ताकि ग्राहक आपसे संपर्क कर सकें।</p>
+
+        <form id="propertyForm" onsubmit="submitProperty(event)">
+
+            <div class="form-group">
+                <label for="title">Property का नाम / Title</label>
+                <input type="text" id="title" placeholder="जैसे: 3 BHK Luxury Apartment, Beautiful House" required>
+            </div>
+
+            <div class="form-group">
+                <label for="purpose">प्रॉपर्टी का प्रकार (Purpose)</label>
+                <select id="purpose" required>
+                    <option value="">चुनें...</option>
+                    <option value="Rent">किराये के लिए (For Rent)</option>
+                    <option value="Sell">बेचने के लिए (For Sale)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">भोपाल में लोकेशन (Location in Bhopal)</label>
+                <select id="location" required onchange="checkNewLocation(this.value)">
+                    <option value="">इलाका चुनें...</option>
+                    
+                    <optgroup label="मुख्य एवं व्यापारिक क्षेत्र (Central & Commercial)">
+                        <option value="MP Nagar Zone 1">MP Nagar Zone 1 (एम.पी. नगर जोन 1)</option>
+                        <option value="MP Nagar Zone 2">MP Nagar Zone 2 (एम.पी. नगर जोन 2)</option>
+                        <option value="New Market">New Market (न्यू मार्केट)</option>
+                        <option value="TT Nagar">TT Nagar (टी.टी. नगर)</option>
+                        <option value="Malviya Nagar">Malviya Nagar (मालवीय नगर)</option>
+                    </optgroup>
+
+                    <optgroup label="पॉश आवासीय क्षेत्र (Premium Residential)">
+                        <option value="Arera Colony">Arera Colony (अरेरा कॉलोनी)</option>
+                        <option value="Shahpura">Shahpura (शाहपुरा)</option>
+                        <option value="Chunabhatti">Chunabhatti (चूनाभट्टी)</option>
+                        <option value="Char Imli">Char Imli (चार इमली)</option>
+                        <option value="Gulmohar">Gulmohar (गुलमोहर)</option>
+                    </optgroup>
+
+                    <optgroup label="तेजी से विकसित होते क्षेत्र (Fast Growing)">
+                        <option value="Kolar Road">Kolar Road (कोलार रोड)</option>
+                        <option value="Awadhpuri">Awadhpuri (अवधपुरी)</option>
+                        <option value="Ayodhya Bypass">Ayodhya Bypass (अयोध्या बाईपास)</option>
+                        <option value="Hoshangabad Road">Hoshangabad Road (होशंगाबाद रोड)</option>
+                        <option value="Katara Hills">Katara Hills (कटारा हिल्स)</option>
+                        <option value="Bawadiya Kalan">Bawadiya Kalan (बावड़िया कलां)</option>
+                    </optgroup>
+
+                    <optgroup label="अन्य प्रमुख क्षेत्र (Other Major Areas)">
+                        <option value="Indrapuri">Indrapuri (इन्द्रपुरी)</option>
+                        <option value="Piplani">Piplani (पिपलानी)</option>
+                        <option value="Kohefiza">Kohefiza (कोहेफिजा)</option>
+                        <option value="Lalghati">Lalghati (लालघाटी)</option>
+                        <option value="Karond">Karond (करोंद)</option>
+                        <option value="Gandhi Nagar">Gandhi Nagar (गांधी नगर)</option>
+                    </optgroup>
+
+                    <option value="other" style="font-weight: bold; color: #3498db;">+ लिस्ट में नहीं है? नई लोकेशन जोड़ें</option>
+                </select>
+
+                <input type="text" id="customLocation" placeholder="अपनी नई लोकेशन का नाम टाइप करें (जैसे: Misrod, Ayodhya Nagar)..." style="display: none; padding: 10px; width: 100%; border-radius: 5px; margin-top: 10px; box-sizing: border-box; border: 1px solid #ccc; font-family: 'Poppins', sans-serif;">
+            </div>
+
+            <div class="form-group">
+                <label for="price">कीमत / Price (₹)</label>
+                <input type="number" id="price" placeholder="जैसे: 15000 (किराया) या 5000000 (बिक्री)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="desc">प्रॉपर्टी के बारे में जानकारी (Description)</label>
+                <textarea id="desc" rows="4" placeholder="सुविधाएं, कमरों की संख्या, पार्किंग आदि की जानकारी दें..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="videoLink">YouTube वीडियो लिंक (Optional - Cinematic/Drone Video)</label>
+                <input type="url" id="videoLink" placeholder="जैसे: https://youtu.be/..." style="padding: 10px; width: 100%; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+
+            <div class="form-group">
+                <label for="propertyImages">प्रॉपर्टी की फोटो (Upload up to 3 Images)</label>
+                <input type="file" id="propertyImages" accept="image/*" multiple required>
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">* आप एक साथ अधिकतम 3 फोटो सेलेक्ट कर सकते हैं</p>
+            </div>
+
+            <button type="submit" class="submit-btn">प्रॉपर्टी पब्लिश करें (Publish Property)</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const brokerEmail = localStorage.getItem('brokerEmail');
+            if (!brokerEmail) {
+                alert('कृपया पहले लॉगिन करें!');
+                window.location.href = 'index.html'; 
+            }
+        });
+
+        function checkNewLocation(val) {
+            const inputBox = document.getElementById('customLocation');
+            if (val === 'other') {
+                inputBox.style.display = 'block'; 
+                inputBox.required = true;         
+                inputBox.focus();                 
+            } else {
+                inputBox.style.display = 'none';  
+                inputBox.required = false;
+                inputBox.value = '';              
+            }
+        }
+
+        async function submitProperty(event) {
+            event.preventDefault(); 
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = "अपलोड हो रहा है... (Please Wait)";
+            submitBtn.disabled = true;
+
+            const brokerEmail = localStorage.getItem('brokerEmail');
+
+            let finalLocation = document.getElementById('location').value;
+            if (finalLocation === 'other') {
+                finalLocation = document.getElementById('customLocation').value.trim();
+            }
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('purpose', document.getElementById('purpose').value);
+            formData.append('location', finalLocation); 
+            formData.append('price', document.getElementById('price').value);
+            formData.append('desc', document.getElementById('desc').value);
+            formData.append('brokerEmail', brokerEmail);
+            formData.append('videoLink', document.getElementById('videoLink').value); // 🚁 वीडियो लिंक
+
+            // 📸 3 फोटो चेक और अपलोड लॉजिक
+            const imgInput = document.getElementById('propertyImages');
+            
+            if (imgInput.files.length > 3) {
+                alert("❌ आप अधिकतम 3 फोटो ही अपलोड कर सकते हैं।");
+                submitBtn.innerText = "प्रॉपर्टी पब्लिश करें (Publish Property)";
+                submitBtn.disabled = false;
+                return;
+            }
+
+            if (imgInput.files.length > 0) {
+                for (let i = 0; i < imgInput.files.length; i++) {
+                    formData.append('propertyImages', imgInput.files[i]);
+                }
+            }
+
+            try {
+                const response = await fetch('/api/add-property', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ प्रॉपर्टी सफलतापूर्वक जुड़ गई!');
+                    window.location.href = 'dashboard.html'; 
+                } else {
+                    alert('❌ ' + data.message);
+                    submitBtn.innerText = "प्रॉपर्टी पब्लिश करें (Publish Property)";
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                alert('❌ सर्वर से जुड़ने में समस्या आई।');
+                submitBtn.innerText = "प्रॉपर्टी पब्लिश करें (Publish Property)";
+                submitBtn.disabled = false;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>

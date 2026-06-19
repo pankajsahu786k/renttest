@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - Bhopal Properties</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .login-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); width: 100%; max-width: 420px; text-align: center; }
+        .logo { font-size: 28px; font-weight: 700; color: #2c3e50; margin-bottom: 20px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; }
+        .input-group input { width: 100%; padding: 15px; border: 2px solid transparent; border-radius: 12px; font-size: 15px; background: #f1f2f6; outline: none; }
+        .input-group input:focus { border-color: #27ae60; background: white; }
+        .login-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .login-btn:hover { background: #219150; }
+        .bottom-link { margin-top: 20px; font-size: 14px; color: #576574; }
+        .bottom-link a { color: #27ae60; font-weight: 700; text-decoration: none; }
+        #errorMsg { background: #ffeaa7; color: #d63031; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">Bhopal <span>Properties</span> 🏠</div>
+        <div id="errorMsg"></div>
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="name@example.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">Log In 🚀</button>
+        </form>
+        <div class="bottom-link">
+            Don't have an account? <a href="signup.html">Sign Up here</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            btn.innerText = "Verifying...";
+            
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: document.getElementById('email').value, 
+                        password: document.getElementById('password').value 
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // ✅ यहाँ डेटा सेव हो रहा है
+                    localStorage.setItem('brokerName', data.name);
+                    localStorage.setItem('brokerEmail', data.email);
+                    localStorage.setItem('userRole', data.role); // 👈 यह सबसे ज़रूरी लाइन है
+                    
+                    // ✅ यहाँ तय होगा कि कहाँ जाना है
+                    if (data.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    errorMsg.innerText = "❌ " + data.message;
+                    errorMsg.style.display = "block";
+                    btn.innerText = "Log In 🚀";
+                }
+            } catch (err) {
+                errorMsg.innerText = "❌ Server Error!";
+                errorMsg.style.display = "block";
+                btn.innerText = "Log In 🚀";
+            }
+        });
+    </script>
+</body>
+</html>
